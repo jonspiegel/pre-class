@@ -1,0 +1,113 @@
+# pre-class
+
+
+Make sure you commit this often with meaningful messages. 
+
+
+
+TESTING PUSH
+
+### Question 1:
+
+Using a loop, print the integers from 1 to 50. 
+```{r}
+for (i in 1:50) {
+  if (i>0 & i < 51) print(i)
+} #I first opened a for loop with the available integers and then told it to print only those between 0 and 51 (i.e. 1 to 50), I added extra stipulations in case an input of potentially troublesome values were given (insted of giving only 1 to 50  to get out 1 to 50 as I did here)
+
+```
+
+### Question 2:
+
+A.  Using a loop, add all the integers between 0 and 1000.
+```{r}
+mysum=0 
+for(i in 1:1000)
+   mysum=mysum+i
+print(mysum) #first I created the new mysum variable with an initial value of zero, then we used a for loop to increase this value by i for all i's within 1 to 1000, finally this is printed
+
+```
+
+B. Now, add all the EVEN integers between 0 and 1000 (hint: use seq())
+```{r}
+mysum=0 
+for(i in seq(0,1000,by=2))
+   mysum=mysum+i
+print(mysum)
+#Here I use the same loop as above but instead of going from 0 to 1000 we go 0 to 1000 by twos (i.e. the even ones)
+
+```
+
+C. Now, repeat A and B WITHOUT using a loop.
+```{r}
+thousand.list<-(0:1000)
+ sum(thousand.list) #here we create the list of integers 0 to 1000 and summate them
+
+even.thousand.list <- seq(0,1000,by=2)
+  sum(even.thousand.list) #here we create the list of even integers 0 to 1000 and summate them
+
+```
+### Question 3:
+
+Here is a dataframe of survey data containing 5 questions :
+
+```{r, eval=FALSE}
+survey <- data.frame(
+                     "participant" = c(1, 2, 3, 4, 5, 6),
+                     "q1" = c(5, 3, 2, 7, 11, 0),
+                     "q2" = c(4, 2, 2, 5, -10, 99),
+                     "q3" = c(-4, -3, 4, 2, 9, 10),
+                     "q4" = c(-30, 5, 2, 23, 4, 2),
+                     "q5" = c(88, 4, -20, 2, 4, 2)
+                     )
+```
+The response to each question should be an integer between 1 and 5. Obviously, we have some bad values in the dataframe. The goal of this problem is to fix them.
+
+A. Using a loop, create a new dataframe called survey.clean where all the invalid values (those that are not integers between 1 and 5) are set to NA.
+```{r}
+survey.clean <- survey
+
+    for(j in 1:6)  {
+      for(i in 2:6) {
+        if (survey.clean[j,i]<1 || survey.clean[j,i]>5 || is.na(survey.clean[j,i])) {
+          survey.clean[j,i] <- NA }}}
+  
+  print(survey.clean)
+
+#I think I am incredibly close. I am waiting to delete my earlier work (below) until I get this. This will look through each value and replace it with NA if it is under 1 or over 5 and store this as survey.clean (a dataframe). Finally it will print it to check it worked. I am missing something on the syntax for assigning a specific index as NA though...
+  
+```
+  
+  
+  for(i in 1:7) {
+    if(survey[1,i]<1 || survey[1,i]>5 || is.na(survey[1,i])) {
+      replace(survey$q1, i, NA)
+    }
+    else {survey[1,i]=survey[1,i]}
+  }
+)
+
+glimpse(survey.clean)
+#my idea here is to make this work for row one and then just change the code so it runs through other rows (make a second for loop wiht j instead of 1). What I am aiming to do in the above part is to go through all 7 rows and to check if the value at each index location is below one or over 5, if it is it will be coded to NA. If it isn't it will stay as it is. This is set to survey.clean. We check it worked with glimpse(survey.clean) on the bottom. U keep trying to troubleshoot but I seem to be make some syntax error in the if statement? ***Note I will need to change out the survey$q1 for index notation before I can move to using i and j to do the entire matrix***
+```
+
+B. Now, again using a loop, add a new column to the dataframe called “invalid.answers” that indicates, for each participant, how many bad answers they gave.
+```{r}
+  invalid.vector <- c(0,0,0,0,0,0) #initial vector to be changed in loop below
+  for(j in 1:6)  
+    for(i in 2:6)
+      if (survey[j,i]<1 || survey[j,i]>5 || is.na(survey[j,i])) {
+       invalid.vector[j] <- (invalid.vector[j] + 1)
+     }
+  
+survey3b <- survey #creating dataframe to work off of
+
+survey3b$newcolumn <- invalid.vector #adding column
+
+colnames(survey3b)[colnames(survey3b)=="newcolumn"] <- "invalid.answers" #rename column
+
+print(survey3b) #check it worked
+  
+  #I want to go row by row (each row is a participant) and look at columns 2-6 (i.e. q1 to q5) to add up any missing values. I am  toal up these values (i.e. how many NA's there are) and store this as a vector called invalid.vector. I then add this vector as a column in the dataframe, change its name to the requested name, and glimpse it to check my totals worked. ***Should use survey.clean from above insted of creating survey3b however, since I couldn't get that question I madea  new vector (must be changed once I get 3a)***
+
+```
