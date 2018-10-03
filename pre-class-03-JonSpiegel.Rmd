@@ -32,30 +32,54 @@ Use **dplyr** functions to address the following questions:
 ```{r}
 gapminder %>%
   distinct(country, continent)  %>%
-      group_by(continent) %>%
-        nrow()
+      count(continent)
 
-#I call the dataframe, get a list of distinct (i.e. unique) countries, and then get the number of rows within that ***********DID NOT FINISH THIS ONE, NEED TO DO FOR EACH CONTINENT STILL*************
+#I call the dataframe, get a list of distinct (i.e. unique) countries and their corresponding continents, and then count up how many fall into each continent
 ```
 2. Which European nation had the lowest GDP per capita in 1997? 
 ```{r}
-gapminder %>%
+gapminder %>% 
   filter(continent == "Europe", year == 1997) %>%
-     summarize(min.gdp = min(gdpPercap))
-      
-
-#Same issue as above, need to figure out how to the call up the country after finding its GDP
+         filter(min_rank(gdpPercap) <=5) %>%
+          select(country)
+#First I limit us to looking at European nations in 1997 with filter.  Next I filter for the 5 lowest ranked (i.e. lowest GDP per capita) countries. Finally I select to only get countries in the end.
       
 ```
 3. According to the data available, what was the average life expectancy across each continent in the 1980s?
 ```{r}
-
-#Same exact as number 1 as far issue goes, how to get it for each continent (could make a loop, feels like hacking it)
+gapminder %>%
+  filter(year < 1990 & year >= 1980) %>%
+    group_by(continent) %>%
+      summarize(mean(lifeExp))
+#I filter so we are looking in the 80s, group by continent and find the average for each continent
 ```
 4. What 5 countries have the highest total GDP over all years combined?
+```{r}
+GDP <- gapminder %>% mutate(GDP = gdpPercap*pop) #calculate gdp from percap and pop
+GDP.total <- GDP %>% group_by(country) %>% summarize(GDPtotal= sum(GDP)) #here I calculate the total GDP for each country over all of the years
+
+GDP.total%>%
+  filter(min_rank(GDPtotal) >=138) %>%
+   select(country)  #here I  use the same machinery as in number 2, order the dataset, filter for the highest values in the variable of interest (here GDP.total) and finally, limit the output to countries
+```
 5. What countries and years had life expectancies of _at least_ 80 years? _N.b. only output the columns of interest: country, life expectancy and year (in that order)._
+```{r}
+gapminder %>%
+  filter(lifeExp >=80) %>%
+    select(country, lifeExp, year)
+
+#straightforwardly, I filter for the condition and then select the desired rows to print in the appropriate order
+```
 6. What 10 countries have the strongest correlation (in either direction) between life expectancy and per capita GDP?
+```{r}
+
+
+#SAY WHAT?
+```
 7. Which combinations of continent (besides Asia) and year have the highest average population across all countries? _N.b. your output should include all results sorted by highest average population_. With what you already know, this one may stump you. See [this Q&A](http://stackoverflow.com/q/27207963/654296) for how to `ungroup` before `arrange`ing. This also [behaves differently in more recent versions of dplyr](https://github.com/hadley/dplyr/releases/tag/v0.5.0).
+```{r}
+#SAY WHAT?
+```
 8. Which three countries have had the most consistent population estimates (i.e. lowest standard deviation) across the years of available data? 
 9. Subset **gm** to only include observations from 1992 and store the results as **gm1992**. What kind of object is this?
 10. Which observations indicate that the population of a country has *decreased* from the previous year **and** the life expectancy has *increased* from the previous year? See [the vignette on window functions](https://cran.r-project.org/web/packages/dplyr/vignettes/window-functions.html).
